@@ -1,9 +1,10 @@
 from scipy import signal
 from PIL import Image
+import sys
 import numpy as np
 import io
 import os
-import sys
+import fire
 import matplotlib.pyplot as plt
 
 from Rignak_Misc.path import get_local_file
@@ -44,18 +45,18 @@ def jpeg_noise_detection(filename):
     return jpeg_noise
 
 
-def main(filename):
-    jpeg_noise = jpeg_noise_detection(filename)
-    plt.plot([e[1] for e in jpeg_noise],
-             [e[0] for e in jpeg_noise],
-             label=os.path.split(filename)[-1])
+def main(input_folder):
+    for filename in os.listdir(input_folder):
+        jpeg_noise = jpeg_noise_detection(os.path.join(input_folder, filename))
+        plt.plot([e[1] for e in jpeg_noise],
+                 [e[0] for e in jpeg_noise],
+                 label=os.path.split(filename)[-1])
+    plt.legend()
+    plt.show()
 
 
 if __name__ == '__main__':
-    if len(sys.argv) == 2:
-        main(sys.argv[1])
+    if len(sys.argv) == 1:
+        main(INPUT_FOLDER)
     else:
-        for filename in os.listdir(INPUT_FOLDER):
-            main(os.path.join(INPUT_FOLDER, filename))
-    plt.legend()
-    plt.show()
+        fire.Fire(main)

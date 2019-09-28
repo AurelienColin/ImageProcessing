@@ -4,19 +4,16 @@ import os
 from os.path import split, splitext, join
 import sys
 from tqdm import tqdm
+import fire
 
 from Rignak_ImageProcessing.miscellaneous_image_operations import extract_checked_bound
 from Rignak_Misc.path import get_local_file
-
-"""
-Use: 
->>> python face_detection.py {input_folder} {output_folder} {mode1} {optional_mode2} {optional_mode3}
-"""
 
 DETECTION_FUNCTION = detect_anime_face
 PORTRAIT_MARGIN_FACTOR = 0.25
 UPPER_BODY_MARGIN_FACTOR = 0.5
 
+SUPPORTED_EXTENSION = ('.png', '.jpg')
 OUTPUT_FOLDER = get_local_file(__file__, 'output')
 INPUT_FOLDER = get_local_file(__file__, 'input')
 
@@ -41,17 +38,11 @@ FACE_MODE_FUNCTION = {
                           int(y + height + height * UPPER_BODY_MARGIN_FACTOR * 2))
 }
 
-DEFAULT_MODES = ("face",)
-
-
-def parse_inputs(argvs):
-    input_folder = argvs[1]
-    output_folder = argvs[2]
-    modes = argvs[3:]
-    return input_folder, output_folder, modes
+DEFAULT_MODES = FACE_MODE_FUNCTION.keys()
 
 
 def extract_faces(full_filename, output_folder=OUTPUT_FOLDER, modes=DEFAULT_MODES):
+    os.makedirs(output_folder, exist_ok=True)
     filename = split(full_filename)[-1]
     im = cv2.imread(full_filename, cv2.IMREAD_COLOR)
     for i, (x, y, width, height) in enumerate(DETECTION_FUNCTION(im)):
@@ -61,15 +52,24 @@ def extract_faces(full_filename, output_folder=OUTPUT_FOLDER, modes=DEFAULT_MODE
             cv2.imwrite(new_filename, new_im)
 
 
-def main(input_folder=INPUT_FOLDER, output_folder=OUTPUT_FOLDER, modes=DEFAULT_MODES):
-    for file in tqdm(os.listdir(input_folder)):
-        full_filename = join(input_folder, file)
+def main(*modes, input_folder=INPUT_FOLDER, output_folder=OUTPUT_FOLDER):
+    """
+    Detect faces and copy them to another folder
+
+    :param input_folder: folder containing the images
+    :param output_folder: future folder containing the faces
+    :param modes: "face", "portrait", "upper_body"
+    :return:
+    """
+    for filename in tqdm(os.listdir(input_folder)):
+        if not os.path.splitext(filename)[-1] in SUPPORTED_EXTENSION:
+            continue
+        full_filename = join(input_folder, filename)
         extract_faces(full_filename, output_folder=output_folder, modes=modes)
 
 
 if __name__ == '__main__':
-    if len(sys.argv) >= 4:
-        input_folder, output_folder, modes = parse_inputs(sys.argv)
-        main(input_folder=input_folder, output_folder=output_folder, modes=modes)
+    if len(sys.argv) == 1:
+        main(*DEFAULT_MODES)
     else:
-        main()
+        fire.Fire(main)
