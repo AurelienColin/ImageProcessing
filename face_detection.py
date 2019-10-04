@@ -72,7 +72,4 @@ def main(*modes, input_folder=INPUT_FOLDER, output_folder=OUTPUT_FOLDER):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) == 1:
-        main(*DEFAULT_MODES)
-    else:
-        fire.Fire(main)
+    fire.Fire(main)
