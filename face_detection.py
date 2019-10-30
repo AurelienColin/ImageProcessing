@@ -6,7 +6,7 @@ import sys
 from tqdm import tqdm
 import fire
 
-from Rignak_ImageProcessing.miscellaneous_image_operations import extract_checked_bound
+from Rignak_ImageProcessing.miscellaneous_image_operations import extract_checked_bound, square_image
 from Rignak_Misc.path import get_local_file
 
 DETECTION_FUNCTION = detect_anime_face
@@ -49,6 +49,7 @@ def extract_faces(full_filename, output_folder=OUTPUT_FOLDER, modes=DEFAULT_MODE
         for i, (x, y, width, height) in enumerate(DETECTION_FUNCTION(im)):
             for mode in modes:
                 new_im = FACE_MODE_FUNCTION[mode](im, x, y, width, height)
+                new_im = square_image(new_im)
                 new_filename = join(output_folder, f"{splitext(filename)[0]}_{mode}.png")
                 cv2.imwrite(new_filename, new_im)
     except Exception as e:

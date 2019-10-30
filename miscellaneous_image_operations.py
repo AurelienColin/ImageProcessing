@@ -20,3 +20,16 @@ def check_bound(im, x, y):
 
 def median_subsampling(block):
     return np.median(block, axis=[2, 3])
+
+def square_image(im):
+    dim = np.max(im.shape[:2])
+    square_im = np.zeros((dim, dim,3))
+    offset_x = (dim-im.shape[0])//2
+    offset_y = (dim-im.shape[1])//2
+    if offset_x != 0:
+        square_im[offset_x:offset_x+im.shape[0]] = im
+    elif offset_y != 0:
+        square_im[:, offset_y:offset_y+im.shape[1]] = im
+    else:
+        square_im = im
+    return square_im
