@@ -41,7 +41,11 @@ def main(*modes, input_folder=INPUT_FOLDER, output_folder=OUTPUT_FOLDER):
 
         for frame_filename in os.listdir(new_folder):
             full_frame_filename = os.path.join(new_folder, frame_filename)
-            extract_faces(full_frame_filename, output_folder=new_folder, modes=modes)
+            extracted_filenames = extract_faces(full_frame_filename, output_folder=new_folder, modes=modes)
+            for extracted_filename in extracted_filenames:
+                final_filename = os.path.join(os.path.split(extracted_filename)[0],
+                                              f'{os.path.splitext(filename)[0]}_{os.path.split(extracted_filename)[1]}')
+                os.rename(extracted_filename, final_filename)
             os.remove(full_frame_filename)
 
 

@@ -44,17 +44,20 @@ DEFAULT_MODES = FACE_MODE_FUNCTION.keys()
 def extract_faces(full_filename, output_folder=OUTPUT_FOLDER, modes=DEFAULT_MODES):
     os.makedirs(output_folder, exist_ok=True)
     filename = split(full_filename)[-1]
+    new_filenames = []
     try:
         im = cv2.imread(full_filename, cv2.IMREAD_COLOR)
         for i, (x, y, width, height) in enumerate(DETECTION_FUNCTION(im)):
             for mode in modes:
                 new_im = FACE_MODE_FUNCTION[mode](im, x, y, width, height)
                 new_im = square_image(new_im)
-                new_filename = join(output_folder, f"{splitext(filename)[0]}_{mode}.png")
+                new_filename = join(output_folder, f"{splitext(filename)[0]}_{i}_{mode}.png")
                 cv2.imwrite(new_filename, new_im)
+                new_filenames.append(new_filename)
     except Exception as e:
         print(f'Error on {filename}: {e}')
-
+        return []
+    return new_filenames
 
 def main(*modes, input_folder=INPUT_FOLDER, output_folder=OUTPUT_FOLDER):
     """
