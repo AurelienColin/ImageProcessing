@@ -5,7 +5,7 @@ from PIL import Image
 from Rignak_Misc.path import get_local_file
 from Rignak_Misc.print import carriage_returned_print
 
-ARGS = [(0, 1),  # vertical symmetry
+ARGS = [(0,),  # vertical symmetry
         (-30, -20, -10, 0, 10, 20, 30),  # rotation
         (1,)]  # scale
 

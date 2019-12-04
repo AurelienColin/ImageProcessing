@@ -23,7 +23,11 @@ def median_subsampling(block):
 
 def square_image(im):
     dim = np.max(im.shape[:2])
-    square_im = np.zeros((dim, dim,3))
+    if len(im.shape) == 3:
+        square_im = np.zeros((dim, dim,3))
+    else:
+        square_im = np.zeros((dim, dim))
+
     offset_x = (dim-im.shape[0])//2
     offset_y = (dim-im.shape[1])//2
     if offset_x != 0:
