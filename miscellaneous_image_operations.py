@@ -1,4 +1,9 @@
 import numpy as np
+import imutils
+import fire
+import os
+import cv2
+import tqdm
 
 def extract_checked_bound(im, x_min, x_max, y_min, y_max):
     x_min, y_min = check_bound(im, x_min, y_min)
@@ -37,3 +42,24 @@ def square_image(im):
     else:
         square_im = im
     return square_im
+    
+def main(input_folder, output_folder, shape, 
+         authorized_extension=('.png', '.jpg', '.jpeg')):
+    for filename in tqdm.tqdm(os.listdir(input_folder)):
+        split_path = os.path.splitext(filename)
+        if not split_path[1] or split_path[1] not in authorized_extension:
+            continue
+        path = os.path.join(input_folder, filename)
+        end_path = os.path.join(output_folder, split_path[0]+'.png')
+        
+        im = cv2.imread(path)
+        if im is None:
+            print(f"{path} is invalid")
+            continue
+        im = square_image(im)
+
+        im = imutils.resize(im, width=shape[0], height=shape[1], inter=cv2.INTER_CUBIC)
+        cv2.imwrite(end_path, im)
+    
+if __name__ == '__main__':
+    fire.Fire(main)
