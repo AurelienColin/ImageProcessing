@@ -30,7 +30,7 @@ def symmetry_on_border(im):
     return im
 
 
-def remove_transparency(namefile, background_color=(128, 128, 128)):
+def remove_transparency(namefile, background_color=(255, 255, 255)):
     im = Image.open(namefile)
     if im.mode in ('RGBA', 'LA') or (im.mode == 'P' and 'transparency' in im.info):
         alpha = im.convert('RGBA').split()[-1]

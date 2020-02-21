@@ -7,8 +7,11 @@ import tqdm
 import glob
 
 from Rignak_Misc.path import create_path
+from Rignak_ImageProcessing.extract_from_white_background import remove_transparency
 
-#python miscellaneous_image_operations.py --background=255 --input_folder=input/* --output_folder=output_misc --shape=(512,512)
+#python miscellaneous_image_operations.py --background=255 --input_folder=input/* --output_folder=output_misc --shape=(1500,1500)
+#python miscellaneous_image_operations.py --background=255 --input_folder=D:\\Telechargements\\CCZ Decrypter\\SAOMD\* --output_folder=SAOMD_white --shape=(1500,1500)
+#python miscellaneous_image_operations.py --background=255 --input_folder="D:\\Mes documents\Documents\\_scripts_python\\Rignak_DanbooruDownload\\output\\sword_art_online official_art ~white_background ~transparent_background\*" --output_folder=danbooru_white --shape=(1500,1500)
 
 def extract_checked_bound(im, x_min, x_max, y_min, y_max):
     x_min, y_min = check_bound(im, x_min, y_min)
@@ -72,6 +75,7 @@ def inverse_fourier_transform(ftimage, m=0):
 
 def main(input_folder, output_folder, shape, background=0,
          authorized_extension=('.png', '.jpg', '.jpeg')):
+    print(input_folder)
     for path in tqdm.tqdm(glob.glob(input_folder)):
         split_path = os.path.splitext(path)
         if not split_path[1] or split_path[1] not in authorized_extension:
@@ -79,6 +83,7 @@ def main(input_folder, output_folder, shape, background=0,
         end_path = os.path.join(output_folder, os.path.split(os.path.split(split_path[0])[0])[1], os.path.split(split_path[0])[-1] + '.png')
         create_path(end_path)
 
+        remove_transparency(path)
         im = cv2.imread(path)
         if im is None:
             print(f"{path} is invalid")
