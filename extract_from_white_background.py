@@ -11,14 +11,18 @@ SECOND_FORMAT = {'folder': 'wikipedia', 'width': 174, 'height': 839, 'switch': 0
 FORMATS = [FIRST_FORMAT, SECOND_FORMAT]
 
 
-def extract_biggest_connected(im):
-    mask = 255 - cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+def extract_biggest_connected(im, v=255, crop=True, c=4):
+    if len(im.shape) == 3 and im.shape[-1]:
+        mask = abs(v - cv2.cvtColor(im, cv2.COLOR_BGR2GRAY))
+    else:
+        mask = abs(v - im)
     mask[mask > 1] = 255
-    nb_components, output, stats, centroids = cv2.connectedComponentsWithStats(mask, 255, connectivity=4)
+    nb_components, output, stats, centroids = cv2.connectedComponentsWithStats(mask, 255, connectivity=c)
     max_label = 1 + np.argmax(stats[1:, cv2.CC_STAT_AREA])
-    im[output != max_label] = 255
-    im = im[stats[max_label, 1]:stats[max_label, 1] + stats[max_label, 3],
-            stats[max_label, 0]:stats[max_label, 0] + stats[max_label, 2]]
+    im[output != max_label] = v
+    if crop:
+        im = im[stats[max_label, 1]:stats[max_label, 1] + stats[max_label, 3],
+             stats[max_label, 0]:stats[max_label, 0] + stats[max_label, 2]]
     return im
 
 
