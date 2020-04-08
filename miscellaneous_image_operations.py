@@ -9,7 +9,8 @@ import glob
 from Rignak_Misc.path import create_path
 from Rignak_ImageProcessing.extract_from_white_background import remove_transparency
 
-#python miscellaneous_image_operations.py --background=255 --input_folder=input/* --output_folder=output_misc --shape=(1500,1500)
+
+# python miscellaneous_image_operations.py --background=255 --input_folder=main_dataset --output_folder=output_misc --shape=(128,128)
 #python miscellaneous_image_operations.py --background=255 --input_folder=D:\\Telechargements\\CCZ Decrypter\\SAOMD\* --output_folder=SAOMD_white --shape=(1500,1500)
 #python miscellaneous_image_operations.py --background=255 --input_folder="D:\\Mes documents\Documents\\_scripts_python\\Rignak_DanbooruDownload\\output\\sword_art_online official_art ~white_background ~transparent_background\*" --output_folder=danbooru_white --shape=(1500,1500)
 
@@ -35,19 +36,35 @@ def median_subsampling(block):
     return np.median(block, axis=[2, 3])
 
 
-def square_image(im, background=0):
-    dim = np.max(im.shape[:2])
+def square_image(im, background=0, mode='max'):
+    if mode == 'max':
+        dim = np.max(im.shape[:2])
+    elif mode == 'min':
+        dim = np.min(im.shape[:2])
+    
     if len(im.shape) == 3:
         square_im = np.zeros((dim, dim, 3)) + background
     else:
         square_im = np.zeros((dim, dim)) + background
 
-    offset_x = (dim - im.shape[0]) // 2
-    offset_y = (dim - im.shape[1]) // 2
-    if offset_x != 0:
-        square_im[offset_x:offset_x + im.shape[0]] = im
-    elif offset_y != 0:
-        square_im[:, offset_y:offset_y + im.shape[1]] = im
+    if mode == 'max':
+        offset_x = (dim - im.shape[0]) // 2
+        offset_y = (dim - im.shape[1]) // 2
+        if offset_x != 0:
+            square_im[offset_x:offset_x + im.shape[0]] = im
+        elif offset_y != 0:
+            square_im[:, offset_y:offset_y + im.shape[1]] = im
+        else:
+            square_im = im
+    elif mode == "min":
+        offset_x = (im.shape[0] - dim) // 2
+        offset_y = (im.shape[1] - dim) // 2
+        if offset_x != 0:
+            square_im = im[offset_x:offset_x + im.shape[0]]
+        elif offset_y != 0:
+            square_im = im[:, offset_y:offset_y + im.shape[1]]
+        else:
+            square_im = im
     else:
         square_im = im
     return square_im
