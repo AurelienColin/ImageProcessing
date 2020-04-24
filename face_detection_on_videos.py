@@ -19,8 +19,13 @@ def extract_keyframes(video_name, output_folder=OUTPUT_FOLDER):
     os.makedirs(new_folder, exist_ok=True)
 
     cmd = f"ffmpeg -skip_frame nokey -i \"{video_name}\" " \
-        f"-vsync 0 -r 30 -f image2 \"{new_folder}/%04d.png\""
+        f"-vsync 0 -f image2 \"{new_folder}/k-%04d.png\""
     os.system(cmd)
+
+    cmd = f"ffmpeg -i \"{video_name}\" " \
+        f"-vsync 0 -vf fps=1 -f image2 \"{new_folder}/p-%05d.png\""
+    os.system(cmd)
+
     return new_folder
 
 
