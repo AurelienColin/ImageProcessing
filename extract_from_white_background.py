@@ -3,8 +3,9 @@ import os
 import cv2
 import imutils
 from PIL import Image
+import tqdm
 
-BASE_FOLDER = "results"
+BASE_FOLDER = "E:\\datasets\\outside_border\\train\\outside_border"
 
 FIRST_FORMAT = {'folder': 'google', 'width': int(549 * 1.1), 'height': int(706 * 1.1), 'switch': 1}
 SECOND_FORMAT = {'folder': 'wikipedia', 'width': 174, 'height': 839, 'switch': 0.3}
@@ -45,6 +46,7 @@ def remove_transparency(namefile, background_color=(255, 255, 255)):
 
 def process_file(full_filename):
     remove_transparency(full_filename)
+    return
     folder, filename = os.path.split(full_filename)[0]
     im = cv2.imread(full_filename)
 
@@ -64,7 +66,7 @@ def process_file(full_filename):
 
 
 def process_folder(folder):
-    for filename in os.listdir(folder):
+    for filename in tqdm.tqdm(os.listdir(folder)):
         process_file(os.path.join(folder, filename))
 
 

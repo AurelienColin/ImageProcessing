@@ -5,13 +5,14 @@ from PIL import Image
 from Rignak_Misc.path import get_local_file
 from Rignak_Misc.print import carriage_returned_print
 
-ARGS = [(0,),  # vertical symmetry
-        (-30, -20, -10, 0, 10, 20, 30),  # rotation
+ARGS = [(0, 1),  # vertical symmetry
+        (0,),  # rotation
         (1,)]  # scale
 
 INPUT_FOLDER = get_local_file(__file__, 'input')
 OUTPUT_FOLDER = get_local_file(__file__, 'output')
 
+INPUT_FOLDER = 'E:\\datasets\\anime\\face_detection\\train\\errors'
 
 def rotate(im, arg):
     return im.rotate(arg, Image.BICUBIC)
