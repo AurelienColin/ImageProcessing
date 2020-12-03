@@ -31,6 +31,8 @@
 
 ## JPEG noise analysis
 
+This script is used to retrieve the compression value of a .jpg. 
+
 ````
 > jpeg_noise_analysis.py --help
 NAME
@@ -48,6 +50,8 @@ POSITIONAL ARGUMENTS
 ````
 python jpeg_noise_analysis.py input/jpeg_noise
 ````
+
+*Miki.png* is the source PNG, which was compressed at 0.7 (*Miki_70.jpg*) and 0.8 (*Miki_80.jpg*). Based on the plots, it is possible to retrieve the first local maximum to know the compression of the .jpg.
 
 ![](examples/JPEG_noise.png)
 
@@ -122,7 +126,7 @@ FLAGS
 
 ```
 > cd Watermarking
-> python DengekiWatemrarking.py
+> python DengekiWatermarking.py
 ```
 
 ![](Watermarking/input/watermarked/example.jpg)
