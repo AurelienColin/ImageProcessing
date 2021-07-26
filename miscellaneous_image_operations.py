@@ -5,6 +5,7 @@ import os
 import cv2
 import tqdm
 import glob
+from skimage.transform import resize
 
 from Rignak_Misc.path import create_path
 from Rignak_ImageProcessing.extract_from_white_background import remove_transparency
@@ -12,7 +13,7 @@ from Rignak_ImageProcessing.extract_from_white_background import remove_transpar
 
 # python miscellaneous_image_operations.py --background=255 --input_folder=main_dataset --output_folder=output_misc --shape=(128,128)
 #python miscellaneous_image_operations.py --background=255 --input_folder=D:\\Telechargements\\CCZ Decrypter\\SAOMD\* --output_folder=SAOMD_white --shape=(1500,1500)
-#python miscellaneous_image_operations.py --background=255 --input_folder="D:\\Mes documents\Documents\\_scripts_python\\Rignak_DanbooruDownload\\output\\sword_art_online official_art ~white_background ~transparent_background\*" --output_folder=danbooru_white --shape=(1500,1500)
+
 
 def extract_checked_bound(im, x_min, x_max, y_min, y_max):
     x_min, y_min = check_bound(im, x_min, y_min)
@@ -47,7 +48,6 @@ def square_image(im, ratio=1, background=0, mode='max'):
 
     dim_y = int(dim * ratio)
     dim_x = int(dim)
-    
     if len(im.shape) == 3:
         square_im = np.zeros((dim_x, dim_y, 3)) + background
     else:
@@ -114,8 +114,7 @@ def main(input_folder, output_folder, shape, background=0,
             print(f"{path} is invalid")
             continue
         im = square_image(im, background=background, ratio=shape[0] / shape[1])
-
-        im = imutils.resize(im, width=shape[0], height=shape[1], inter=cv2.INTER_CUBIC)
+        im = resize(im, shape, anti_aliasing=True)
         cv2.imwrite(end_path, im)
 
 
